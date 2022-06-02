@@ -1,0 +1,25 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: guestbook-ui
+  namespace: application
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`guestbook.tardis7.icarotech.com`)
+      priority: 10
+      services:
+        - name: guestbook-ui
+          port: 80
+    - kind: Rule
+      match: Host(`guestbook.tardis7.icarotech.com`) && Headers(`Content-Type`, `application/grpc`)
+      priority: 11
+      services:
+        - name: guestbook-ui
+          port: 80
+          scheme: h2c
+  tls:
+    certResolver: default
+#    options: {}
